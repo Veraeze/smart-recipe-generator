@@ -1,16 +1,21 @@
+from fastapi import Query
+
 from fastapi import APIRouter
 from app.models.ingredient_input import IngredientInput
+from app.utils.ai_generator import generate_recipe
+from app.utils.mock_ai import generate_mock_recipe
+import asyncio
 
 router = APIRouter()
 
 @router.post("/generate-recipes")
-def generate_recipes(data: IngredientInput):
-    #logic
-    sample_recipe = {
-        "title": "fried rice and chicken",
-        "ingredients_used": data.ingredients,
-        "instructions": "Cook rice, add pepper,vegetables and chicken. Simmer for 20 minutes.",
-        "image_url": "https://example.com/spicy-chicken-rice.jpg"
-    }
+async def generate_recipes(data: IngredientInput, use_mock: bool = Query(False, title="Toggle to use mock response")):
+    # simulate loading time
+    await asyncio.sleep(2)
 
-    return {"recipes": [sample_recipe]}
+    if use_mock:
+        ai_response = generate_mock_recipe(data.ingredients)
+    else:
+        ai_response = generate_recipe(data.ingredients)
+
+    return {"recipes": [ai_response]}

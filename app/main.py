@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import recipes
+from dotenv import load_dotenv
 
 app = FastAPI()
+load_dotenv()
+app.include_router(recipes.router)
 
 app.add_middleware(
     CORSMiddleware,
