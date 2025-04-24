@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -22,3 +23,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+=======
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+
+# Environment variables
+.env
+>>>>>>> 096692af7072ad52104c3612435933015b69a1e9
