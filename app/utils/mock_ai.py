@@ -1,4 +1,5 @@
 import random
+from operator import index
 
 sample_titles = [
     "Creamy Tomato Pasta", "Grilled Chicken Salad", "Spicy Stir Fry Noodles",
@@ -32,15 +33,45 @@ sample_images = [
     "https://placehold.co/600x400?text=Beef+Tacos"
 ]
 
-def generate_mock_recipe(ingredients: list[str]) -> dict:
-    idx = random.randint(0, len(sample_titles) - 1)
+def generate_mock_recipe(user_ingredients: list[str]) -> dict:
+    user_ingredients_set = set(ingredient.lower() for ingredient in user_ingredients)
+    #Score each sample recipe by how many ingredients match
+    scored = []
+    for i, recipe_ingredients in enumerate(sample_ingredients):
+        recipe_set = set(recipe_ingredients)
+        match_score = len(user_ingredients_set & recipe_set)
+        scored.append((match_score, i))
+
+    # Sort by best match
+    scored.sort(reverse=True)
+    top_score, top_index = scored[0]
     return {
-        "title": sample_titles[idx],
-        "ingredients": sample_ingredients[idx],
-        "instructions": sample_instructions[idx],
-        "image_url": sample_images[idx]
+        "title": sample_titles[top_index],
+        "ingredients": sample_ingredients[top_index],
+        "instructions": sample_instructions[top_index],
+        "image_url": sample_images[top_index]
     }
 
 def generate_mock_response(user_ingredients: list[str], count: int = 3) -> list[dict]:
-    return [generate_mock_recipe(user_ingredients) for _ in range(count)]
+    # Return top 3 matching recipes instead of random
+    user_ingredients_set = set(i.lower() for i in user_ingredients)
+    scored = []
+
+    for i, recipe_ingredients in enumerate(sample_ingredients):
+        match_score = len(user_ingredients_set & set(user_ingredients))
+
+    # Sort by best match and get the top `count` recipes
+    scored.sort(reverse=True)
+    selected_indexes = [index for _, index in scored[:count]]
+
+    return [
+        {
+            "title": sample_titles[i],
+            "ingredients": sample_ingredients[i],
+            "instructions": sample_instructions[i],
+            "image_url": sample_images[i]
+        }
+        for i in selected_indexes
+    ]
+
 
